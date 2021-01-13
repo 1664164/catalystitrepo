@@ -1,5 +1,5 @@
 <?php
-include "config.php"
+include "config.php";
 
 if(isset($_POST['but_import'])){
 	$target_dir = "uploads/";
@@ -13,10 +13,10 @@ if(isset($_POST['but_import'])){
 	}
 
 	if($uploadOk != 0){
-		if (move_uploaded_file($_FILES["importfile"]["tmp_name"], $target_dir.'users.csv')) {
+		if (move_uploaded_file($_FILES["importfile"]["tmp_name"], $target_dir.'importfile.csv')) {
 			
 			//Checking file exists or not
-			$target_file = $target_dir . 'users.csv'
+			$target_file = $target_dir . 'importfile.csv'
 			$fileexists = 0;
 			if(file_exists($target_file)){
 				$fileexists = 1;
@@ -24,7 +24,7 @@ if(isset($_POST['but_import'])){
 			if($fileexists == 1){
 				
 				//Open the file.
-				$file = fopen("users.csv", "r");
+				$file = fopen($target_file, "r");
 				$i = 0;
 				
 				$importData_arr = array();
@@ -74,11 +74,66 @@ if(isset($_POST['but_import'])){
 }
 ?>
 
+<!-- Import form (start) -->
+<div class="popup_import">
+ <form method="post" action="" enctype="multipart/form-data" id="import_form">
+  <table width="100%">
 
+   <tr>
+    <td colspan="2">
+     <input type='file' name="importfile" id="importfile">
+    </td>
+   </tr>
+   <tr>
+    <td colspan="2" ><input type="submit" id="but_import" name="but_import" value="Import"></td>
+   </tr>
+   <tr>
+    <td colspan="2" align="center"><span class="format">Name, Surname, Email</span> </td>
+   </tr>
+   <tr>
+    <td colspan="2" align="center"><a href="import_example.csv" target="_blank">Download Sample</a></td>
+   </tr>
 
+   <tr>
+    <td colspan="2"><b>Instruction : </b><br/>
+     <ul>
+      <li>Enclose text field in quotes (' , " ) if text contains comma (,) is used.</li>
+      <li>Enclose text field in single quotes (') if text contains double quotes (")</li>
+      <li>Enclose text field in double quotes (") if text contains single quotes (')</li>
+     </ul>
+    </td>
+   </tr>
+  </table>
+ </form>
+</div>
+<!-- Import form (end) -->
 
-
-
-
-
-
+<!-- Displaying imported users -->
+<table border="1" id="user table">
+	<tr>
+		<td>S.no</td>
+		<td>name</td>
+		<td>surname</td>
+		<td>email</td>
+	</tr>
+	<?php
+		$sql = "select * from user order by id desc limit 12";
+		$sno = 1;
+		$retrieve_data = mysqli_query($con,$sql);
+		while($row = mysqli_fetch_array($retrieve_data)){
+			$id = $row['id'];
+			$name = $row['name'];
+			$surname = $row['surname'];
+			$email = $row['email'];
+		
+			echo "<tr>
+				<td>".$sno."</td>
+				<td>".$name."</td>
+				<td>".$surname."</td>
+				<td>".$email."</td>
+			
+			</tr>";
+			$sno++;
+		}
+	?>
+</table>
