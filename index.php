@@ -18,6 +18,13 @@ surname VARCHAR(50) NOT NULL,
 email VARCHAR(50) NOT NULL UNIQUE,
 )";
 
+if($conn->query($sql) === TRUE){
+  echo "Table users created successfully";
+} else {
+  echo "Error creating table: " . $conn->error;
+}
+
+$conn->close();
 
 //Open the file.
 $fileHandle = fopen("users.csv", "r");
